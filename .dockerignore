@@ -1,0 +1,27 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Audit (jangan masuk image)
+audit_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log

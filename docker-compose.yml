@@ -1,0 +1,24 @@
+services:
+  # Mode 1: Kirim ringkasan sekali jalan (untuk cron atau manual trigger)
+  daily-summary:
+    build: .
+    container_name: idx-daily-summary
+    env_file:
+      - .env
+    volumes:
+      - ./watchlist.json:/app/watchlist.json
+      - ./audit_data:/app/audit_data
+    restart: "no"
+    command: ["python", "-m", "src.main"]
+
+  # Mode 2: Bot listener interaktif untuk kelola watchlist & trigger /summary
+  telegram-bot:
+    build: .
+    container_name: idx-telegram-bot
+    env_file:
+      - .env
+    volumes:
+      - ./watchlist.json:/app/watchlist.json
+      - ./audit_data:/app/audit_data
+    restart: unless-stopped
+    command: ["python", "-m", "src.bot"]

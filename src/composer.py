@@ -7,6 +7,7 @@ Menyajikan:
 - Bubble 4: Catatan Disclaimer & Panduan Operasional
 """
 
+import re
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 
@@ -232,7 +233,15 @@ def _compose_bubbles_watchlist(fundamentals: list[dict], news: dict) -> list[str
         for line in news_text.split("\n"):
             clean_l = line.strip()
             if clean_l:
-                if not clean_l.startswith("-") and not clean_l.startswith("•"):
+                # Parse format: "- [teks] (Sumber: URL)" -> "• [teks] 🔗 Baca Berita (URL)"
+                source_match = re.search(r'\(Sumber:\s*(.+?)\)\s*$', clean_l)
+                if source_match:
+                    url = source_match.group(1).strip()
+                    base_text = clean_l[:source_match.start()].strip()
+                    if base_text.startswith("- ") or base_text.startswith("• "):
+                        base_text = base_text[2:]
+                    clean_l = f"• {base_text} 🔗 Baca Berita ({url})"
+                elif not clean_l.startswith("-") and not clean_l.startswith("•"):
                     clean_l = f"• {clean_l}"
                 card_lines.append(f"{clean_l}")
 
